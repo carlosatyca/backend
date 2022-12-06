@@ -22,7 +22,6 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-  req.body
-  res.send({cositas:req.body})
+  console.log(req.body.data)
 })
 
