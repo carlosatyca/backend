@@ -22,7 +22,9 @@ app.get('/', (req, res) => {
   dummy.stdout.on('data', function(data) {
     sys.print(data.toString());
   });
+  res = dummy
   res.send({uo:"pillado huron"})
   console.log("amicu");
+  console.log(dummy)
 })
 
