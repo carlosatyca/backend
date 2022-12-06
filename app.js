@@ -20,3 +20,9 @@ app.get('/', (req, res) => {
   res.send({uo:"pillado huron"})
 })
 
+app.post('/', (req, res) => {
+  res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+  req.body
+  res.send({cositas:req.body})
+})
+
