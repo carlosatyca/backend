@@ -48,6 +48,6 @@ def main(arg):
     return final_payload
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main(sys.argv)
 
 
